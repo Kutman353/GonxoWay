@@ -121,12 +121,15 @@
       window.setTimeout(fn, wait);
     }
 
-    /** Путь для Netlify Forms (AJAX): каталог HTML-страницы, например /gonzo-way/ или /. */
+    /**
+     * URL для Netlify Forms: POST на тот же HTML-файл, где объявлена форма.
+     * POST на «/» часто даёт 404; для главной нужен /index.html.
+     */
     function netlifyFormPostPath() {
-      var path = window.location.pathname;
-      if (path.endsWith("/")) return path || "/";
-      var i = path.lastIndexOf("/");
-      return path.slice(0, i + 1) || "/";
+      var path = window.location.pathname || "/";
+      if (path === "/") return "/index.html";
+      if (path.endsWith("/")) return path + "index.html";
+      return path;
     }
 
     function submitQuote() {

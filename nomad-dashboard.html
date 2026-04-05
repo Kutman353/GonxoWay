@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Nomad Dashboard — личный кабинет путешественника Gonzo Way: статус поездки, авто, чек-лист, погода." />
+  <title>Nomad Dashboard — Gonzo Way</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: { DEFAULT: "#1a2820", light: "#243529", mist: "#2f4338", deep: "#121c17" },
+            sand: { DEFAULT: "#d6c9b0", dark: "#b8a88c", deep: "#9a8b72", pale: "#ebe4d6" },
+            graphite: { DEFAULT: "#2c2c2c", soft: "#3a3a3a", ink: "#1f1f1f" },
+            telegram: { DEFAULT: "#2aabee", deep: "#229ed9" },
+          },
+          fontFamily: {
+            display: ["Cormorant Garamond", "Georgia", "serif"],
+            sans: ["DM Sans", "system-ui", "sans-serif"],
+          },
+          boxShadow: {
+            card: "0 18px 48px rgba(0, 0, 0, 0.28)",
+            "card-soft": "0 8px 32px rgba(0, 0, 0, 0.2)",
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    /* Сетка дашборда: сайдбар + основная область */
+    .nomad-shell {
+      display: grid;
+      min-height: 100dvh;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+    }
+    @media (min-width: 1024px) {
+      .nomad-shell {
+        grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr);
+        grid-template-rows: 1fr;
+      }
+    }
+    .nomad-card {
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(36, 53, 41, 0.35);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+    }
+    .checklist-row {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      width: 100%;
+      text-align: left;
+      padding: 0.875rem 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(18, 28, 23, 0.45);
+      color: rgba(235, 228, 214, 0.95);
+      cursor: pointer;
+      transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+    }
+    .checklist-row:hover {
+      border-color: rgba(214, 201, 176, 0.22);
+      background: rgba(18, 28, 23, 0.65);
+    }
+    .checklist-row:active {
+      transform: scale(0.99);
+    }
+    .checklist-row:focus-visible {
+      outline: 2px solid var(--gw-sand);
+      outline-offset: 2px;
+    }
+    .checklist-row[aria-checked="true"] {
+      border-color: rgba(214, 201, 176, 0.35);
+      background: rgba(47, 67, 56, 0.5);
+    }
+    .checklist-box {
+      flex-shrink: 0;
+      width: 1.375rem;
+      height: 1.375rem;
+      border-radius: 0.35rem;
+      border: 2px solid rgba(214, 201, 176, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+    .checklist-row[aria-checked="true"] .checklist-box {
+      background-color: var(--gw-sand);
+      border-color: var(--gw-sand);
+    }
+    .checklist-box svg {
+      width: 0.875rem;
+      height: 0.875rem;
+      color: var(--gw-pine);
+      opacity: 0;
+      transform: scale(0.6);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .checklist-row[aria-checked="true"] .checklist-box svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .pdf-doc-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.65rem 1rem 0.65rem 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px dashed rgba(214, 201, 176, 0.4);
+      background: linear-gradient(180deg, rgba(235, 228, 214, 0.06) 0%, rgba(18, 28, 23, 0.5) 100%);
+      color: rgba(235, 228, 214, 0.92);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+    .pdf-doc-btn:hover {
+      border-color: rgba(214, 201, 176, 0.65);
+      background: linear-gradient(180deg, rgba(235, 228, 214, 0.1) 0%, rgba(18, 28, 23, 0.55) 100%);
+    }
+    .pdf-doc-btn:focus-visible {
+      outline: 2px solid var(--gw-sand);
+      outline-offset: 2px;
+    }
+    .sos-telegram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.8125rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(135deg, #2aabee 0%, #229ed9 55%, #1e8bc4 100%);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+        0 12px 32px rgba(34, 158, 217, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+    .sos-telegram:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.06);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+        0 16px 40px rgba(34, 158, 217, 0.42);
+    }
+    .sos-telegram:active {
+      transform: translateY(0);
+    }
+    .sos-telegram:focus-visible {
+      outline: 2px solid var(--gw-sand);
+      outline-offset: 3px;
+    }
+    .lucide-icon {
+      width: 1.125rem;
+      height: 1.125rem;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body class="bg-pine-deep text-sand-pale font-sans antialiased">
+  <div class="nomad-shell">
+    <!-- Сайдбар -->
+    <aside
+      class="flex flex-col border-b border-white/10 bg-pine/90 backdrop-blur-md lg:border-b-0 lg:border-r lg:min-h-screen lg:sticky lg:top-0 lg:self-start"
+      aria-label="Разделы кабинета"
+    >
+      <div class="flex items-center justify-between gap-3 px-4 py-4 lg:flex-col lg:items-stretch lg:px-5 lg:pt-8 lg:pb-6">
+        <a href="index.html" class="site-header__logo text-lg sm:text-xl lg:text-2xl">Gonzo Way</a>
+        <p class="hidden text-[0.65rem] uppercase tracking-[0.2em] text-sand-deep lg:block">Nomad</p>
+      </div>
+      <nav class="flex gap-1 px-2 pb-3 lg:flex-col lg:px-4 lg:pb-0 lg:gap-0.5" aria-label="Навигация кабинета">
+        <a
+          href="index.html"
+          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sand/80 transition-colors hover:bg-white/5 hover:text-sand lg:py-3"
+        >
+          <i data-lucide="home" class="lucide-icon text-sand-dark" aria-hidden="true"></i>
+          Главная
+        </a>
+        <a
+          href="nomad-dashboard.html"
+          class="flex items-center gap-3 rounded-lg bg-white/8 px-3 py-2.5 text-sm font-semibold text-sand lg:py-3"
+          aria-current="page"
+        >
+          <i data-lucide="calendar-check" class="lucide-icon text-sand" aria-hidden="true"></i>
+          Бронирования
+        </a>
+        <a
+          href="https://t.me/gonzo_way"
+          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sand/80 transition-colors hover:bg-white/5 hover:text-sand lg:py-3"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <i data-lucide="life-buoy" class="lucide-icon text-sand-dark" aria-hidden="true"></i>
+          Поддержка
+        </a>
+      </nav>
+      <div class="mt-auto hidden px-4 pb-8 lg:block">
+        <p class="mb-3 text-[0.65rem] uppercase tracking-[0.18em] text-sand-deep">Связь</p>
+        <a class="sos-telegram" href="https://t.me/gonzo_way" rel="noopener noreferrer" target="_blank">
+          <i data-lucide="send" class="h-[1.05rem] w-[1.05rem]" aria-hidden="true"></i>
+          SOS в Telegram
+        </a>
+      </div>
+    </aside>
+
+    <!-- Основной контент -->
+    <main class="min-w-0 px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+      <header class="mb-8 lg:mb-10">
+        <h1 class="font-display text-3xl font-semibold text-sand sm:text-4xl">Личный кабинет</h1>
+        <p class="mt-2 max-w-xl text-sm text-sand/65">Пульт управления поездкой: статус, авто, список снаряжения и погода в точке назначения.</p>
+      </header>
+
+      <div
+        class="grid gap-5 lg:gap-6"
+        style="grid-template-columns: 1fr; grid-template-rows: auto;"
+      >
+        <!-- Статус поездки -->
+        <section class="nomad-card relative overflow-hidden p-6 sm:p-8 lg:p-10" aria-labelledby="trip-status-heading">
+          <div
+            class="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-sand/5 blur-3xl"
+            aria-hidden="true"
+          ></div>
+          <div class="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p id="trip-status-heading" class="text-xs font-semibold uppercase tracking-[0.2em] text-sand-deep">
+                Статус поездки
+              </p>
+              <p class="mt-3 font-display text-2xl font-semibold leading-tight text-sand sm:text-3xl lg:text-[1.75rem] xl:text-4xl">
+                Ваш Nomad готов к выезду через 3 дня
+              </p>
+              <p class="mt-3 max-w-2xl text-sm leading-relaxed text-sand/70">
+                Выдача: 8 апреля, 10:00 · База Новосибирск. Документы и депозит — в день старта по чек-листу ниже.
+              </p>
+            </div>
+            <div class="flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-pine-deep/60 px-4 py-2 text-xs font-medium text-sand/80">
+              <i data-lucide="map-pin" class="lucide-icon text-sand-dark" aria-hidden="true"></i>
+              Алтай, Чемал
+            </div>
+          </div>
+        </section>
+
+        <!-- Сетка карточек: авто + правая колонка -->
+        <div
+          class="grid gap-5 lg:gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,320px)] lg:items-start"
+        >
+          <!-- Детали авто -->
+          <section class="nomad-card overflow-hidden" aria-labelledby="vehicle-heading">
+            <div class="aspect-[16/10] w-full overflow-hidden bg-pine sm:aspect-[2/1]">
+              <img
+                src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&amp;fit=crop&amp;w=960&amp;q=75"
+                alt="The Nomad — внедорожник с палаткой на крыше"
+                width="960"
+                height="600"
+                class="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="space-y-5 p-6 sm:p-8">
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <h2 id="vehicle-heading" class="font-display text-2xl font-semibold text-sand">The Nomad</h2>
+                  <p class="mt-1 text-sm text-sand/60">Внедорожник · оверленд</p>
+                </div>
+                <div
+                  class="inline-flex items-center rounded-md border-2 border-white/20 bg-pine-deep/80 px-3 py-1.5 font-mono text-sm font-bold tracking-wider text-sand"
+                  title="Госномер"
+                >
+                  А 777 КХ 22
+                </div>
+              </div>
+              <div>
+                <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-sand-deep">Документация</p>
+                <button type="button" class="pdf-doc-btn" id="manual-pdf-btn">
+                  <i data-lucide="file-text" class="h-4 w-4 text-sand-dark" aria-hidden="true"></i>
+                  Инструкция по эксплуатации
+                </button>
+                <p class="mt-2 text-xs text-sand/50" id="manual-hint" hidden>PDF появится в кабинете после финальной оплаты.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Погода + мобильный SOS -->
+          <div class="flex flex-col gap-5 lg:gap-6">
+            <section class="nomad-card p-6" aria-labelledby="weather-heading">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h2 id="weather-heading" class="text-xs font-semibold uppercase tracking-[0.2em] text-sand-deep">Погода</h2>
+                  <p class="mt-3 font-display text-3xl font-semibold text-sand">+14°C</p>
+                  <p class="mt-1 text-base text-sand/85">Алтай</p>
+                  <p class="mt-2 text-sm text-sand/60">Переменная облачность, без осадков · ветер до 4 м/с</p>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-pine-deep/50 p-3 text-sand/90">
+                  <i data-lucide="cloud-sun" class="h-10 w-10 text-sand-dark" aria-hidden="true"></i>
+                </div>
+              </div>
+            </section>
+
+            <section class="nomad-card p-6 lg:hidden" aria-label="Экстренная связь">
+              <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-sand-deep">Связь</p>
+              <a class="sos-telegram" href="https://t.me/gonzo_way" rel="noopener noreferrer" target="_blank">
+                <i data-lucide="send" class="h-[1.05rem] w-[1.05rem]" aria-hidden="true"></i>
+                SOS в Telegram
+              </a>
+            </section>
+
+            <!-- Чек-лист -->
+            <section class="nomad-card p-6 sm:p-7" aria-labelledby="checklist-heading">
+              <h2 id="checklist-heading" class="text-xs font-semibold uppercase tracking-[0.2em] text-sand-deep">
+                Чек-лист снаряжения
+              </h2>
+              <p class="mt-2 text-sm text-sand/55">Отметьте, что уже собрано — список сохраняется в этом браузере.</p>
+              <ul class="mt-5 space-y-2.5" id="checklist" role="list">
+                <li>
+                  <button type="button" class="checklist-row" role="checkbox" aria-checked="false" data-check-key="sleeping">
+                    <span class="checklist-box" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <span class="flex flex-1 items-center gap-2">
+                      <i data-lucide="moon" class="lucide-icon text-sand-deep" aria-hidden="true"></i>
+                      Спальники
+                    </span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="checklist-row" role="checkbox" aria-checked="false" data-check-key="gas">
+                    <span class="checklist-box" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <span class="flex flex-1 items-center gap-2">
+                      <i data-lucide="flame" class="lucide-icon text-sand-deep" aria-hidden="true"></i>
+                      Газ
+                    </span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="checklist-row" role="checkbox" aria-checked="false" data-check-key="flashlight">
+                    <span class="checklist-box" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <span class="flex flex-1 items-center gap-2">
+                      <i data-lucide="flashlight" class="lucide-icon text-sand-deep" aria-hidden="true"></i>
+                      Фонарик
+                    </span>
+                  </button>
+                </li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <footer class="mt-12 border-t border-white/10 pt-8 text-center text-xs text-sand/45 lg:text-left">
+        <a href="index.html" class="text-sand/60 underline decoration-sand/25 underline-offset-4 hover:text-sand hover:decoration-sand/50">На сайт Gonzo Way</a>
+      </footer>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+  <script>
+    (function () {
+      if (typeof lucide !== "undefined") lucide.createIcons();
+
+      var storageKey = "gonzo-nomad-checklist";
+      var buttons = document.querySelectorAll("[data-check-key]");
+
+      function loadState() {
+        try {
+          return JSON.parse(localStorage.getItem(storageKey) || "{}");
+        } catch (e) {
+          return {};
+        }
+      }
+      function saveState(state) {
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(state));
+        } catch (e) {}
+      }
+      var state = loadState();
+      buttons.forEach(function (btn) {
+        var key = btn.getAttribute("data-check-key");
+        if (key && state[key]) {
+          btn.setAttribute("aria-checked", "true");
+        }
+        btn.addEventListener("click", function () {
+          var on = btn.getAttribute("aria-checked") !== "true";
+          btn.setAttribute("aria-checked", on ? "true" : "false");
+          var k = btn.getAttribute("data-check-key");
+          if (k) {
+            var s = loadState();
+            if (on) s[k] = true;
+            else delete s[k];
+            saveState(s);
+          }
+        });
+      });
+
+      var pdfBtn = document.getElementById("manual-pdf-btn");
+      var hint = document.getElementById("manual-hint");
+      if (pdfBtn && hint) {
+        pdfBtn.addEventListener("click", function () {
+          hint.hidden = !hint.hidden;
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

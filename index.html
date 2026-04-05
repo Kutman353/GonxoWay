@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Gonzo Way — аренда кемперов и внедорожников с палаткой на крыше. Путешествия по диким местам для пар и фотографов." />
+  <title>Gonzo Way — аренда кемперов и оверленда</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: { DEFAULT: "#1a2820", light: "#243529", mist: "#2f4338", deep: "#121c17" },
+            sand: { DEFAULT: "#d6c9b0", dark: "#b8a88c", deep: "#9a8b72", pale: "#ebe4d6" },
+            graphite: { DEFAULT: "#2c2c2c", soft: "#3a3a3a", ink: "#1f1f1f" },
+          },
+          fontFamily: {
+            display: ["Cormorant Garamond", "Georgia", "serif"],
+            sans: ["DM Sans", "system-ui", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script>document.documentElement.classList.add("js");</script>
+</head>
+<body class="bg-pine-deep text-sand-pale font-sans antialiased overflow-x-hidden">
+  <!-- Компонент шапки: стили в components.css, фрагмент для Figma — partials/header.html -->
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="#hero" class="site-header__logo">Gonzo Way</a>
+      <nav class="site-header__nav" aria-label="Основная навигация">
+        <a href="#fleet">Автопарк</a>
+        <a href="#why">Почему мы</a>
+        <a href="#gallery">Галерея</a>
+        <a href="#quote">Заявка</a>
+      </nav>
+      <a href="#fleet" class="btn btn--primary btn--sm site-header__cta">Выбрать авто</a>
+      <button
+        type="button"
+        class="site-header__burger"
+        aria-label="Открыть меню"
+        aria-expanded="false"
+        aria-controls="nav-drawer"
+        id="nav-toggle"
+      >
+        <span class="sr-only">Меню</span>
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+    <div id="nav-drawer" class="site-header__drawer" role="dialog" aria-label="Меню">
+      <nav class="site-header__drawer-nav" aria-label="Мобильное меню">
+        <a href="#fleet">Автопарк</a>
+        <a href="#why">Почему мы</a>
+        <a href="#gallery">Галерея</a>
+        <a href="#quote">Заявка</a>
+        <a href="#fleet" class="btn btn--primary btn--nav-mobile">Выбрать фургон</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section
+      id="hero"
+      class="relative min-h-[100dvh] flex flex-col justify-end pb-24 pt-28 sm:pb-32 sm:justify-center sm:pt-24"
+    >
+      <div class="absolute inset-0 bg-gradient-to-b from-pine-deep via-pine/80 to-pine-deep" aria-hidden="true"></div>
+      <div
+        class="absolute inset-0 opacity-40 sm:opacity-50"
+        style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&amp;fit=crop&amp;w=1400&amp;q=65'); background-size: cover; background-position: center;"
+        aria-hidden="true"
+      ></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-pine-deep via-pine-deep/70 to-transparent" aria-hidden="true"></div>
+
+      <div class="relative mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        <h1 class="font-display text-[clamp(2rem,6vw,3.75rem)] font-semibold leading-[1.1] text-sand max-w-4xl">
+          <span class="block overflow-hidden">
+            <span data-hero-line class="block">Твой отель с видом</span>
+          </span>
+          <span class="block overflow-hidden mt-1">
+            <span data-hero-line class="block text-sand-dark">на миллион звёзд</span>
+          </span>
+        </h1>
+        <p
+          data-hero-rest
+          class="mt-6 max-w-xl text-base sm:text-lg text-sand/80 leading-relaxed"
+        >
+          Сдаём в аренду полностью укомплектованные внедорожники с палаткой на крыше и уютные кастомные фургоны — чтобы вы уехали в дикие места без суеты с экипировкой.
+        </p>
+        <div data-hero-rest class="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+          <a href="#fleet" class="btn btn--primary">Выбрать фургон</a>
+          <a href="#quote" class="btn btn--secondary sm:ml-1">Рассчитать даты</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Автопарк -->
+    <section id="fleet" class="section-block border-t border-white/5 bg-pine">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <h2 data-reveal class="font-display text-3xl sm:text-4xl font-semibold text-sand text-center">
+          Наш автопарк
+        </h2>
+        <p data-reveal class="mx-auto mt-4 max-w-2xl text-center text-sand/70">
+          Два характера — один уровень готовности к дороге. Для пар и съёмок на природе.
+        </p>
+        <div class="mt-16 lg:mt-20 grid gap-8 lg:grid-cols-2 lg:gap-10">
+          <article
+            data-reveal
+            data-reveal-delay="1"
+            class="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-pine-light/40"
+          >
+            <div class="fleet-card__media aspect-[16/10] overflow-hidden bg-pine">
+              <img
+                src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&amp;fit=crop&amp;w=960&amp;q=75"
+                alt="Брутальный внедорожник с палаткой на крыше в горах"
+                width="960"
+                height="600"
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="flex flex-1 flex-col p-6 sm:p-8">
+              <h3 class="font-display text-2xl font-semibold text-sand">The Nomad</h3>
+              <p class="mt-1 text-sm uppercase tracking-widest text-sand-deep">Внедорожник · оверленд</p>
+              <ul class="mt-6 space-y-3 text-sand/85 text-sm sm:text-base">
+                <li class="flex gap-3"><span class="text-sand-dark">Места:</span> до 4 пассажиров</li>
+                <li class="flex gap-3"><span class="text-sand-dark">Кухня:</span> полевой комплект + газ, посуда</li>
+                <li class="flex gap-3"><span class="text-sand-dark">Привод:</span> полный (4×4)</li>
+                <li class="flex gap-3"><span class="text-sand-dark">Сон:</span> палатка на крыше, спальники</li>
+              </ul>
+              <a href="#quote" class="mt-8 inline-flex w-fit items-center text-sm font-semibold text-sand underline decoration-sand/30 underline-offset-4 hover:decoration-sand">
+                Запросить The Nomad →
+              </a>
+            </div>
+          </article>
+          <article
+            data-reveal
+            data-reveal-delay="2"
+            class="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-pine"
+          >
+            <div class="fleet-card__media aspect-[16/10] overflow-hidden bg-pine">
+              <img
+                src="https://images.unsplash.com/photo-1527786356703-4b100091cd2c?auto=format&amp;fit=crop&amp;w=960&amp;q=75"
+                alt="Уютный кастомный фургон"
+                width="960"
+                height="600"
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="flex flex-1 flex-col p-6 sm:p-8">
+              <h3 class="font-display text-2xl font-semibold text-sand">The Cozy One</h3>
+              <p class="mt-1 text-sm uppercase tracking-widest text-sand-deep">Минивэн · дом на колёсах</p>
+              <ul class="mt-6 space-y-3 text-sand/85 text-sm sm:text-base">
+                <li class="flex gap-3"><span class="text-sand-dark">Места:</span> 2–4 (ночёвка для пары + опции)</li>
+                <li class="flex gap-3"><span class="text-sand-dark">Кухня:</span> внутри: плита, холодильник, кофемашина</li>
+                <li class="flex gap-3"><span class="text-sand-dark">Привод:</span> передний (FWD)</li>
+                <li class="flex gap-3"><span class="text-sand-dark">Вайб:</span> дерево, гирлянды, тёплый свет</li>
+              </ul>
+              <a href="#quote" class="btn btn--primary btn--block btn--sentence mt-8 text-center">
+                Забронировать The Cozy One
+              </a>
+              <a href="#quote" class="mt-4 inline-flex w-fit items-center text-sm font-semibold text-sand underline decoration-sand/30 underline-offset-4 hover:decoration-sand">
+                Запросить The Cozy One →
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Почему мы -->
+    <section id="why" class="section-block border-t border-white/5 bg-graphite-ink">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <h2 data-reveal class="font-display text-3xl sm:text-4xl font-semibold text-sand text-center">
+          Почему мы
+        </h2>
+        <p data-reveal class="mx-auto mt-3 max-w-xl text-center text-sand/65">
+          Минимум сюрпризов на маршруте — максимум свободы.
+        </p>
+        <ul class="mt-16 lg:mt-20 grid gap-6 sm:grid-cols-3 sm:gap-8">
+          <li data-reveal data-reveal-delay="1" class="rounded-2xl border border-white/10 bg-graphite p-6 sm:p-8">
+            <p class="font-display text-xl text-sand mb-3">Полная страховка</p>
+            <p class="text-sm text-sand/70 leading-relaxed">Каско и ОСАГО оформляем мы. Вы едете спокойно: лес, горы, грунт — по согласованному маршруту.</p>
+          </li>
+          <li data-reveal data-reveal-delay="2" class="rounded-2xl border border-white/10 bg-graphite p-6 sm:p-8">
+            <p class="font-display text-xl text-sand mb-3">Внутри есть всё</p>
+            <p class="text-sm text-sand/70 leading-relaxed">От спальников и постельного до турки для кофе и тёплой одежды в боксе — список согласуем перед выдачей.</p>
+          </li>
+          <li data-reveal data-reveal-delay="3" class="rounded-2xl border border-white/10 bg-graphite p-6 sm:p-8">
+            <p class="font-display text-xl text-sand mb-3">Поддержка 24/7</p>
+            <p class="text-sm text-sand/70 leading-relaxed">На связи в пути: вопросы по технике, маршруту или ночлегу — не оставляем одних.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Галерея -->
+    <section id="gallery" class="section-block border-t border-white/5 bg-pine">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <h2 data-reveal class="font-display text-3xl sm:text-4xl font-semibold text-sand text-center">
+          Атмосфера в пути
+        </h2>
+        <p data-reveal class="mx-auto mt-3 max-w-lg text-center text-sand/70">
+          Горы, костёр, дорога — как в ваших лентах, только без фильтров.
+        </p>
+        <div class="mt-16 lg:mt-20 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3 lg:gap-4">
+          <figure data-reveal class="col-span-2 aspect-[21/9] overflow-hidden rounded-xl sm:rounded-2xl lg:col-span-2 lg:aspect-[2.4/1]">
+            <img
+              src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&amp;fit=crop&amp;w=1200&amp;q=68"
+              alt="Горный пейзаж на рассвете"
+              width="1200"
+              height="500"
+              class="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <figure data-reveal data-reveal-delay="1" class="aspect-square overflow-hidden rounded-xl sm:rounded-2xl lg:aspect-auto lg:row-span-1">
+            <img
+              src="https://images.unsplash.com/photo-1475483768296-6163e08872a6?auto=format&amp;fit=crop&amp;w=640&amp;q=70"
+              alt="Костёр в сумерках"
+              width="640"
+              height="640"
+              class="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <figure data-reveal data-reveal-delay="2" class="aspect-[4/3] overflow-hidden rounded-xl sm:rounded-2xl">
+            <img
+              src="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&amp;fit=crop&amp;w=640&amp;q=70"
+              alt="Кемпер у озера"
+              width="640"
+              height="480"
+              class="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <figure data-reveal data-reveal-delay="3" class="aspect-[4/3] overflow-hidden rounded-xl sm:rounded-2xl lg:col-span-2">
+            <img
+              src="https://images.unsplash.com/photo-1516939884455-1445c8652f83?auto=format&amp;fit=crop&amp;w=960&amp;q=68"
+              alt="Дорога через лес"
+              width="960"
+              height="480"
+              class="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        </div>
+        <p data-reveal class="mt-8 text-center text-sm text-sand/50">
+          Больше кадров — в наших соцсетях ниже.
+        </p>
+      </div>
+    </section>
+
+    <!-- Форма -->
+    <section id="quote" class="section-block border-t border-white/5 bg-graphite-ink">
+      <div class="mx-auto max-w-xl px-4 sm:px-6 lg:px-8">
+        <h2 data-reveal class="font-display text-3xl sm:text-4xl font-semibold text-sand text-center">
+          Заявка на расчёт дат
+        </h2>
+        <p data-reveal class="mt-3 text-center text-sand/65 text-sm sm:text-base">
+          Оставьте контакты и желаемые дни — пришлём стоимость и чек-лист выезда.
+        </p>
+
+        <form
+          name="gonzo-quote"
+          method="POST"
+          data-netlify="true"
+          data-netlify-honeypot="bot-field"
+          action="thank-you.html"
+          class="mt-12 sm:mt-14 space-y-6"
+        >
+          <input type="hidden" name="form-name" value="gonzo-quote" />
+
+          <p class="hidden" aria-hidden="true">
+            <label>
+              Не заполнять: <input name="bot-field" tabindex="-1" autocomplete="off" />
+            </label>
+          </p>
+
+          <div>
+            <label for="gq-name" class="block text-xs font-medium uppercase tracking-wider text-sand/60 mb-2">Имя</label>
+            <input
+              id="gq-name"
+              name="name"
+              type="text"
+              required
+              autocomplete="name"
+              class="w-full rounded-xl border border-white/10 bg-pine-deep/80 px-4 py-3.5 text-sand placeholder:text-sand/35 focus:border-sand/40 focus:outline-none focus:ring-1 focus:ring-sand/30"
+              placeholder="Как к вам обращаться"
+            />
+          </div>
+          <div>
+            <label for="gq-email" class="block text-xs font-medium uppercase tracking-wider text-sand/60 mb-2">Email</label>
+            <input
+              id="gq-email"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+              class="w-full rounded-xl border border-white/10 bg-pine-deep/80 px-4 py-3.5 text-sand placeholder:text-sand/35 focus:border-sand/40 focus:outline-none focus:ring-1 focus:ring-sand/30"
+              placeholder="you@example.com"
+            />
+          </div>
+          <div>
+            <label for="gq-phone" class="block text-xs font-medium uppercase tracking-wider text-sand/60 mb-2">Телефон</label>
+            <input
+              id="gq-phone"
+              name="phone"
+              type="tel"
+              required
+              autocomplete="tel"
+              inputmode="tel"
+              class="w-full rounded-xl border border-white/10 bg-pine-deep/80 px-4 py-3.5 text-sand placeholder:text-sand/35 focus:border-sand/40 focus:outline-none focus:ring-1 focus:ring-sand/30"
+              placeholder="+7 …"
+            />
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="gq-from" class="block text-xs font-medium uppercase tracking-wider text-sand/60 mb-2">С даты</label>
+              <input
+                id="gq-from"
+                name="date_from"
+                type="date"
+                required
+                class="w-full rounded-xl border border-white/10 bg-pine-deep/80 px-4 py-3.5 text-sand focus:border-sand/40 focus:outline-none focus:ring-1 focus:ring-sand/30"
+              />
+            </div>
+            <div>
+              <label for="gq-to" class="block text-xs font-medium uppercase tracking-wider text-sand/60 mb-2">По дату</label>
+              <input
+                id="gq-to"
+                name="date_to"
+                type="date"
+                required
+                class="w-full rounded-xl border border-white/10 bg-pine-deep/80 px-4 py-3.5 text-sand focus:border-sand/40 focus:outline-none focus:ring-1 focus:ring-sand/30"
+              />
+            </div>
+          </div>
+          <div>
+            <label for="gq-vehicle" class="block text-xs font-medium uppercase tracking-wider text-sand/60 mb-2">Машина</label>
+            <div class="form-select-wrap">
+              <select id="gq-vehicle" name="vehicle" class="form-select" required>
+                <option value="" disabled selected>Выберите машину</option>
+                <option value="nomad">The Nomad</option>
+                <option value="cozy">The Cozy One</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="gq-note" class="block text-xs font-medium uppercase tracking-wider text-sand/60 mb-2">Комментарий</label>
+            <textarea
+              id="gq-note"
+              name="message"
+              rows="3"
+              class="w-full resize-y rounded-xl border border-white/10 bg-pine-deep/80 px-4 py-3.5 text-sand placeholder:text-sand/35 focus:border-sand/40 focus:outline-none focus:ring-1 focus:ring-sand/30"
+              placeholder="Маршрут, количество людей, съёмка…"
+            ></textarea>
+          </div>
+          <div class="pt-2">
+            <button type="submit" id="gq-submit" class="btn btn--primary btn--block">
+              Отправить заявку
+            </button>
+            <p class="mt-4 text-center text-xs text-sand/45">
+              Нажимая кнопку, вы соглашаетесь на обработку данных для связи по заявке.
+            </p>
+          </div>
+
+          <div
+            id="quote-status"
+            class="mt-8 hidden rounded-2xl border border-white/10 bg-pine-light/35 p-6 text-center sm:p-8"
+            role="region"
+            aria-label="Статус заявки"
+            aria-live="polite"
+          >
+            <div id="quote-status-processing" class="hidden">
+              <p class="font-display text-xl font-semibold text-sand sm:text-2xl">Обработка</p>
+              <p class="mt-2 text-sm text-sand/65">Передаём заявку, подождите несколько секунд…</p>
+              <div class="mt-5 flex justify-center" aria-hidden="true">
+                <span class="inline-flex h-9 w-9 animate-spin rounded-full border-2 border-sand/20 border-t-sand/70"></span>
+              </div>
+            </div>
+            <div id="quote-status-accepted" class="hidden">
+              <p class="font-display text-2xl font-semibold text-sand sm:text-3xl">Заявка принята</p>
+              <p class="mt-2 text-sm text-sand/65">
+                Мы свяжемся с вами для уточнения дат. Ниже — личный кабинет поездки: статус, авто и чек-лист.
+              </p>
+              <a
+                href="nomad-dashboard.html"
+                class="btn btn--primary btn--block btn--sentence mt-8"
+              >
+                Управление поездкой
+              </a>
+            </div>
+            <div id="quote-status-error" class="hidden">
+              <p class="font-display text-xl font-semibold text-sand">Не удалось отправить</p>
+              <p class="mt-2 text-sm text-sand/65">Проверьте сеть и попробуйте ещё раз.</p>
+              <button type="button" id="quote-retry" class="btn btn--secondary btn--block btn--sentence mt-6">
+                Попробовать снова
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10 bg-pine-deep py-16 sm:py-20">
+    <div class="mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 text-center sm:px-6 lg:flex-row lg:justify-between lg:text-left lg:px-8">
+      <div>
+        <p class="font-display text-xl text-sand">Gonzo Way</p>
+        <p class="mt-2 text-sm text-sand/55 max-w-xs mx-auto lg:mx-0">
+          Аренда кемперов и оверленда. Пары и фотографы 25–40 — ваш формат.
+        </p>
+      </div>
+      <div class="flex flex-col gap-2 text-sm text-sand/75">
+        <a href="mailto:hello@gonzoway.ru" class="hover:text-sand transition-colors">hello@gonzoway.ru</a>
+        <a href="tel:+79000000000" class="hover:text-sand transition-colors">+7 (900) 000-00-00</a>
+      </div>
+      <div class="flex gap-4" aria-label="Соцсети">
+        <a
+          href="https://instagram.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-xs font-semibold text-sand/80 hover:border-sand/40 hover:text-sand transition-colors"
+        >
+          IG
+        </a>
+        <a
+          href="https://t.me"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-xs font-semibold text-sand/80 hover:border-sand/40 hover:text-sand transition-colors"
+        >
+          TG
+        </a>
+        <a
+          href="https://youtube.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-xs font-semibold text-sand/80 hover:border-sand/40 hover:text-sand transition-colors"
+        >
+          YT
+        </a>
+      </div>
+    </div>
+    <p class="mt-10 text-center text-xs text-sand/40">© 2026 Gonzo Way</p>
+  </footer>
+
+  <script src="main.js" defer></script>
+</body>
+</html>

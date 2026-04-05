@@ -1,0 +1,38 @@
+<!--
+  Gonzo Way — фрагмент шапки (копировать в макеты / сверять с index.html).
+  Стили: ../components.css — классы site-header*, кнопка .btn.btn--primary.btn--sm
+-->
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="#hero" class="site-header__logo">Gonzo Way</a>
+    <nav class="site-header__nav" aria-label="Основная навигация">
+      <a href="#fleet">Автопарк</a>
+      <a href="#why">Почему мы</a>
+      <a href="#gallery">Галерея</a>
+      <a href="#quote">Заявка</a>
+    </nav>
+    <a href="#fleet" class="btn btn--primary btn--sm site-header__cta">Выбрать авто</a>
+    <button
+      type="button"
+      class="site-header__burger"
+      aria-label="Открыть меню"
+      aria-expanded="false"
+      aria-controls="nav-drawer"
+      id="nav-toggle"
+    >
+      <span class="sr-only">Меню</span>
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+  <div id="nav-drawer" class="site-header__drawer" role="dialog" aria-label="Меню">
+    <nav class="site-header__drawer-nav" aria-label="Мобильное меню">
+      <a href="#fleet">Автопарк</a>
+      <a href="#why">Почему мы</a>
+      <a href="#gallery">Галерея</a>
+      <a href="#quote">Заявка</a>
+      <a href="#fleet" class="btn btn--primary btn--nav-mobile">Выбрать фургон</a>
+    </nav>
+  </div>
+</header>

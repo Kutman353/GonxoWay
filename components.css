@@ -1,0 +1,317 @@
+/**
+ * Gonzo Way — UI-компоненты (шапка, кнопки, селект)
+ * Подключать после Tailwind: переиспользование в других страницах.
+ */
+
+:root {
+  --gw-pine: #1a2820;
+  --gw-pine-deep: #121c17;
+  --gw-pine-light: #243529;
+  --gw-sand: #d6c9b0;
+  --gw-sand-dark: #b8a88c;
+  --gw-sand-deep: #9a8b72;
+}
+
+/* ---------- Кнопки ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--gw-sand);
+  outline-offset: 3px;
+}
+
+.btn--primary {
+  background-color: var(--gw-sand);
+  color: var(--gw-pine);
+  padding: 1rem 2rem;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+.btn--primary:hover {
+  background-color: var(--gw-sand-dark);
+  transform: translateY(-2px);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
+}
+
+.btn--primary.btn--block {
+  padding-top: 1.125rem;
+  padding-bottom: 1.125rem;
+}
+
+.btn--secondary {
+  background-color: transparent;
+  color: var(--gw-sand);
+  border-color: rgba(214, 201, 176, 0.5);
+  padding: 1rem 2rem;
+}
+
+.btn--secondary:hover {
+  border-color: var(--gw-sand);
+  background-color: rgba(214, 201, 176, 0.08);
+  color: var(--gw-sand);
+}
+
+.btn--secondary:active {
+  transform: translateY(1px);
+}
+
+.btn--sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+}
+
+@media (min-width: 768px) {
+  .btn--sm {
+    font-size: 0.8125rem;
+    padding: 0.5rem 1.25rem;
+  }
+}
+
+.btn--block {
+  width: 100%;
+}
+
+/* Кнопка без ALL CAPS (карточка фургона) */
+.btn--sentence {
+  text-transform: none;
+  letter-spacing: 0.03em;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.btn--nav-mobile {
+  margin-top: 0.5rem;
+  width: 100%;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 0.9375rem;
+}
+
+/* ---------- Шапка ---------- */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(18, 28, 23, 0.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.75rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .site-header__inner {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .site-header__inner {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.site-header__logo {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--gw-sand);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .site-header__logo {
+    font-size: 1.5rem;
+  }
+}
+
+.site-header__logo:hover {
+  color: var(--gw-sand-dark);
+}
+
+.site-header__nav {
+  display: none;
+  align-items: center;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .site-header__nav {
+    display: flex;
+  }
+}
+
+.site-header__nav a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(214, 201, 176, 0.75);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.site-header__nav a:hover {
+  color: var(--gw-sand);
+}
+
+.site-header__cta {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .site-header__cta {
+    display: inline-flex;
+  }
+}
+
+.site-header__burger {
+  display: flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: var(--gw-sand);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.site-header__burger:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+@media (min-width: 768px) {
+  .site-header__burger {
+    display: none;
+  }
+}
+
+.site-header__drawer {
+  display: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--gw-pine-light);
+  padding: 1rem;
+}
+
+.site-header__drawer.is-open {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .site-header__drawer {
+    display: none !important;
+  }
+}
+
+.site-header__drawer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.site-header__drawer-nav a {
+  padding: 0.5rem 0;
+  color: rgba(214, 201, 176, 0.92);
+  text-decoration: none;
+  font-size: 0.9375rem;
+}
+
+.site-header__drawer-nav a:hover {
+  color: var(--gw-sand);
+}
+
+/* ---------- Селект формы ---------- */
+.form-select-wrap {
+  position: relative;
+}
+
+.form-select-wrap::after {
+  content: "";
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid rgba(214, 201, 176, 0.65);
+  pointer-events: none;
+}
+
+.form-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(18, 28, 23, 0.85);
+  color: var(--gw-sand);
+  padding: 0.875rem 2.75rem 0.875rem 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-select:hover {
+  border-color: rgba(214, 201, 176, 0.25);
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: rgba(214, 201, 176, 0.45);
+  box-shadow: 0 0 0 1px rgba(214, 201, 176, 0.25);
+}
+
+.form-select option {
+  background-color: var(--gw-pine);
+  color: var(--gw-sand);
+}

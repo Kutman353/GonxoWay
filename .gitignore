@@ -1,0 +1,26 @@
+# ОС
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Редакторы / IDE (раскомментируйте .vscode, если хотите хранить общие настройки в репо)
+.idea/
+*.swp
+*.swo
+*~
+
+# Секреты и локальная среда (не коммитить)
+.env
+.env.*
+!.env.example
+
+# Если позже появится Node/npm
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Временные и кэш
+*.tmp
+.cache/
+*.log

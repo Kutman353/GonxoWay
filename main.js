@@ -66,10 +66,10 @@
   }
 
   /*
-   * Заявка: статусы «Обработка» → «Заявка принята» и переход в nomad-dashboard.html.
-   * На Netlify fetch(POST) на index.html часто даёт 404 — отправляем форму в скрытый iframe
-   * (нативный POST на action="thank-you.html", как задумано у Netlify Forms).
-   * Локально — имитация успеха без сети.
+   * Заявка: «Обработка» → «Заявка принята» (кнопка в кабинет).
+   * Netlify: 1) POST fetch на action (thank-you.html) — без iframe, нет конфликта с X-Frame-Options;
+   * 2) при сбое — скрытый iframe (нативный submit). Локально — демо без сети.
+   * Защита: анти-двойной submit, honeypot в разметке, ограничения maxlength в HTML.
    */
   var quoteForm = document.querySelector('form[name="gonzo-quote"]');
   if (quoteForm) {
@@ -122,7 +122,16 @@
       window.setTimeout(fn, wait);
     }
 
+    function releaseQuoteLock() {
+      quoteForm.removeAttribute("data-gq-busy");
+    }
+
     function submitQuote() {
+      if (quoteForm.getAttribute("data-gq-busy") === "1") {
+        return;
+      }
+      quoteForm.setAttribute("data-gq-busy", "1");
+
       var startedAt = Date.now();
       showPhase("processing");
       setSubmitting(true);
@@ -131,6 +140,7 @@
         afterMinDelay(startedAt, function () {
           showPhase("accepted");
           setSubmitting(false);
+          releaseQuoteLock();
         });
       }
 
@@ -138,6 +148,7 @@
         afterMinDelay(startedAt, function () {
           showPhase("error");
           setSubmitting(false);
+          releaseQuoteLock();
         });
       }
 
@@ -148,63 +159,86 @@
         return;
       }
 
-      var iframeName = "gonzo-netlify-" + String(Date.now());
-      var iframe = document.createElement("iframe");
-      iframe.name = iframeName;
-      iframe.setAttribute("aria-hidden", "true");
-      iframe.title = "Отправка заявки";
-      iframe.style.cssText =
-        "position:absolute;left:-9999px;width:1px;height:1px;border:0;opacity:0;pointer-events:none";
+      var actionPath = new URL(quoteForm.getAttribute("action") || "thank-you.html", window.location.href).pathname;
+      var body = new URLSearchParams(new FormData(quoteForm)).toString();
 
-      var savedTarget = quoteForm.getAttribute("target");
-      var loads = 0;
-      var finished = false;
-      var timeoutId = window.setTimeout(function () {
-        cleanup();
-        goError();
-      }, 28000);
+      function submitViaIframeFallback() {
+        var iframeName = "gonzo-netlify-" + String(Date.now());
+        var iframe = document.createElement("iframe");
+        iframe.name = iframeName;
+        iframe.setAttribute("aria-hidden", "true");
+        iframe.title = "Отправка заявки";
+        iframe.style.cssText =
+          "position:absolute;left:-9999px;width:1px;height:1px;border:0;opacity:0;pointer-events:none";
 
-      function cleanup() {
-        if (finished) return;
-        finished = true;
-        window.clearTimeout(timeoutId);
-        iframe.removeEventListener("load", onIframeLoad);
-        if (savedTarget == null || savedTarget === "") {
-          quoteForm.removeAttribute("target");
-        } else {
-          quoteForm.setAttribute("target", savedTarget);
-        }
-        if (iframe.parentNode) {
-          iframe.parentNode.removeChild(iframe);
-        }
-      }
-
-      function onIframeLoad() {
-        loads += 1;
-        var path = "";
-        var href = "";
-        try {
-          path = iframe.contentWindow.location.pathname || "";
-          href = iframe.contentWindow.location.href || "";
-        } catch (err) {
-          path = "";
-          href = "";
-        }
-        if (/thank-you/i.test(path) || /thank-you/i.test(href)) {
-          cleanup();
-          goAccepted();
-          return;
-        }
-        if (loads >= 2) {
+        var savedTarget = quoteForm.getAttribute("target");
+        var loads = 0;
+        var finished = false;
+        var timeoutId = window.setTimeout(function () {
           cleanup();
           goError();
+        }, 28000);
+
+        function cleanup() {
+          if (finished) return;
+          finished = true;
+          window.clearTimeout(timeoutId);
+          iframe.removeEventListener("load", onIframeLoad);
+          if (savedTarget == null || savedTarget === "") {
+            quoteForm.removeAttribute("target");
+          } else {
+            quoteForm.setAttribute("target", savedTarget);
+          }
+          if (iframe.parentNode) {
+            iframe.parentNode.removeChild(iframe);
+          }
         }
+
+        function onIframeLoad() {
+          loads += 1;
+          var path = "";
+          var href = "";
+          try {
+            path = iframe.contentWindow.location.pathname || "";
+            href = iframe.contentWindow.location.href || "";
+          } catch (err) {
+            path = "";
+            href = "";
+          }
+          if (/thank-you/i.test(path) || /thank-you/i.test(href)) {
+            cleanup();
+            goAccepted();
+            return;
+          }
+          if (loads >= 2) {
+            cleanup();
+            goError();
+          }
+        }
+
+        iframe.addEventListener("load", onIframeLoad);
+        document.body.appendChild(iframe);
+        quoteForm.setAttribute("target", iframeName);
+        quoteForm.submit();
       }
 
-      iframe.addEventListener("load", onIframeLoad);
-      document.body.appendChild(iframe);
-      quoteForm.setAttribute("target", iframeName);
-      quoteForm.submit();
+      fetch(actionPath, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: body,
+        credentials: "same-origin",
+        cache: "no-store",
+      })
+        .then(function (res) {
+          if (res.ok) {
+            goAccepted();
+            return;
+          }
+          throw new Error("netlify fetch");
+        })
+        .catch(function () {
+          submitViaIframeFallback();
+        });
     }
 
     quoteForm.addEventListener("submit", function (e) {

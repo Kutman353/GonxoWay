@@ -7,7 +7,9 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "DENY"
+    # DENY ломает скрытый iframe при отправке формы (thank-you внутри frame → ошибка у всех).
+    # SAMEORIGIN: свой же сайт может встраивать страницы; чужие домены — нет.
+    X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
